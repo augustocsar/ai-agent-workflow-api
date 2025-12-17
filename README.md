@@ -26,7 +26,7 @@ Você precisa ter o [Bun instalado](https://bun.sh) na sua máquina.
 
 ```bash
 # 1. Clone o repositório
-git clone [https://github.com/SEU_USUARIO/api-agentes.git](https://github.com/SEU_USUARIO/api-agentes.git)
+git clone https://github.com/augustocsar/ai-agent-workflow-api.git
 ```
 ```bash
 # 2. Entre na pasta
