@@ -45,24 +45,28 @@ api-agentes/
 ### Pré-requisitos
 Você precisa ter o [Bun instalado](https://bun.sh) na sua máquina.
 
+## 1. Clone o repositório
 ```bash
-# 1. Clone o repositório
 git clone https://github.com/augustocsar/ai-agent-workflow-api.git
 ```
+
+## 2. Entre na pasta
 ```bash
-# 2. Entre na pasta
 cd api-agentes
 ```
+
+## 3. Instale as dependências
 ```bash
-# 3. Instale as dependências
 bun install
 ```
+
+## 4. Gere o Banco de Dados (SQLite)
 ```bash
-# 4. Gere o Banco de Dados (SQLite)
 bunx drizzle-kit push
 ```
+
+## 5. Rode o servidor
 ```bash
-# 5. Rode o servidor
 bun --watch src/index.ts
 ```
 
