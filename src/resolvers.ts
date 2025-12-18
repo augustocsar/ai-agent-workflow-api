@@ -19,7 +19,7 @@ export const resolvers = {
       return result[0]
     },
 
-    // 2. Adiciona um Prompt (Com correção do erro de nulo)
+    // 2. Adiciona um Prompt (Com versionamento automático)
     addPrompt: async (_: any, { agentId, text }: { agentId: string, text: string }) => {
       const idNumerico = parseInt(agentId)
       
@@ -31,7 +31,6 @@ export const resolvers = {
         .orderBy(desc(prompts.version))
         .limit(1)
 
-      // CORREÇÃO AQUI: Verificamos se existe antes de acessar a propriedade
       const ultimoPrompt = ultimosPrompts[0]
       const novaVersao = ultimoPrompt ? ultimoPrompt.version + 1 : 1
 
@@ -65,18 +64,35 @@ export const resolvers = {
       }).returning()
 
       return result[0]
+    },
+
+    // 4. Deletar um Agente (Faxina Completa / Cascade Delete)
+    deleteAgent: async (_: any, { id }: { id: string }) => {
+      const idNumerico = parseInt(id)
+
+      // Passo 1: Apagar o histórico de conversas (Runs) desse agente
+      // (Se não apagar isso antes, o banco reclama de integridade)
+      await db.delete(runs).where(eq(runs.agentId, idNumerico))
+
+      // Passo 2: Apagar as memórias (Prompts) desse agente
+      await db.delete(prompts).where(eq(prompts.agentId, idNumerico))
+
+      // Passo 3: Agora que ele não tem mais vínculos, apaga o Agente
+      await db.delete(agents).where(eq(agents.id, idNumerico))
+
+      return `Agente ${id} e todos os seus dados foram deletados com sucesso.`
     }
   },
 
   // Relacionamentos (Resolvers Aninhados)
   Agent: {
-    // Quando pedirem 'prompts' dentro de 'Agent', filtre pelo ID do pai
+    // Busca prompts do agente específico
     prompts: async (parent: any) => {
       return await db.select().from(prompts)
         .where(eq(prompts.agentId, parent.id))
         .orderBy(desc(prompts.version))
     },
-    // Quando pedirem 'runs' dentro de 'Agent', filtre pelo ID do pai
+    // Busca conversas do agente específico
     runs: async (parent: any) => {
       return await db.select().from(runs)
         .where(eq(runs.agentId, parent.id))

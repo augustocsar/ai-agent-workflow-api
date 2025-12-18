@@ -32,8 +32,7 @@ export const typeDefs = `
   type Mutation {
     createAgent(name: String!, model: String!): Agent!
     addPrompt(agentId: ID!, text: String!): Prompt!
-    
-    # Ação principal: Mandar uma mensagem para o Agente
     executeRun(agentId: ID!, input: String!): Run!
+    deleteAgent(id: ID!): String
   }
 `
